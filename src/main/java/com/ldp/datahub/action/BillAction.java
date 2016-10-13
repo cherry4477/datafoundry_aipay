@@ -4,11 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ldp.datahub.common.Constant;
 import com.ldp.datahub.entity.request.Recharge;
-import com.ldp.datahub.exception.LinkServerException;
 import com.ldp.datahub.service.BillService;
 import com.ldp.datahub.util.ConfigUtil;
 
@@ -119,6 +115,7 @@ public class BillAction extends BaseAction
 	@RequestMapping(value = "/payconfirm/message", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> receivePay(HttpServletRequest request, HttpServletResponse response){
 		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		ResMsgAnalyze analyze = ConfigUtil.getResMsgAnalyze();
 		ReqMsgGenerate reqMsgGenerate = ConfigUtil.getPrivateReqMsgGenerate();
 		try{
@@ -145,21 +142,32 @@ public class BillAction extends BaseAction
 		    	
 		    	//生成签名的支付通知反馈报文
 		    	String signPayNotifyMsg = reqMsgGenerate.generatePayNotifyResMsg(payNotifyResVo);
-		    	response.setContentType("UTF-8");
-		    	response.getOutputStream().write(signPayNotifyMsg.getBytes());
+		    	
+		    	data.put("signPayNotifyMsg", signPayNotifyMsg);
+		    	data.put("order_id", singlePayResVo.getPartnerTradeNo());
+		    	data.put("result", 0);
+		    	jsonMap.put(Constant.result_code, Constant.sucess_code);
+		    	jsonMap.put(Constant.result_msg, Constant.sucess);
+		    	jsonMap.put(Constant.data_result, data);
+		    	
 			}else{
-				response.setContentType("UTF-8");
-				response.getOutputStream().write("验证签名失败".getBytes());
+				
+				data.put("signPayNotifyMsg", "验证签名失败".getBytes());
+		    	data.put("order_id", singlePayResVo.getPartnerTradeNo());
+		    	data.put("result", 1);
+		    	jsonMap.put(Constant.result_code, Constant.sucess_code);
+		    	jsonMap.put(Constant.result_msg, Constant.sucess);
+		    	jsonMap.put(Constant.data_result, data);
 			}
 			
 		}catch (Exception e) {
-			try {
-				response.setContentType("UTF-8");
-				response.getOutputStream().write("报文解析失败".getBytes());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			log.error(e.getMessage());
+			data.put("signPayNotifyMsg", "报文解析失败".getBytes());
+	    	jsonMap.put(Constant.result_code, Constant.fail_code);
+	    	jsonMap.put(Constant.result_msg, e.getMessage());
+	    	jsonMap.put(Constant.data_result, data);
+		}finally {
+			setResponseStatus(jsonMap, response);
 		}
 		return jsonMap;
 	}
