@@ -14,7 +14,6 @@ RUN mv ./target/lib .
 
 EXPOSE 8080
 
-ENV SERVICE_NAME=datahub_bill
 
 CMD ["java","-jar","datahub_bill-1.0.jar"]
 
