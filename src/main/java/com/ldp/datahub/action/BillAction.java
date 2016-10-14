@@ -148,7 +148,7 @@ public class BillAction extends BaseAction
 		    	data.put("result", 0);
 		    	jsonMap.put(Constant.result_code, Constant.sucess_code);
 		    	jsonMap.put(Constant.result_msg, Constant.sucess);
-		    	jsonMap.put(Constant.data_result, data);
+		    	jsonMap.put(Constant.result_data, data);
 		    	
 			}else{
 				
@@ -157,7 +157,7 @@ public class BillAction extends BaseAction
 		    	data.put("result", 1);
 		    	jsonMap.put(Constant.result_code, Constant.sucess_code);
 		    	jsonMap.put(Constant.result_msg, Constant.sucess);
-		    	jsonMap.put(Constant.data_result, data);
+		    	jsonMap.put(Constant.result_data, data);
 			}
 			
 		}catch (Exception e) {
@@ -165,7 +165,7 @@ public class BillAction extends BaseAction
 			data.put("signPayNotifyMsg", "报文解析失败".getBytes());
 	    	jsonMap.put(Constant.result_code, Constant.fail_code);
 	    	jsonMap.put(Constant.result_msg, e.getMessage());
-	    	jsonMap.put(Constant.data_result, data);
+	    	jsonMap.put(Constant.result_data, data);
 		}finally {
 			setResponseStatus(jsonMap, response);
 		}
