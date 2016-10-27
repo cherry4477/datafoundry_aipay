@@ -81,7 +81,7 @@ public class ConfigUtil {
 			}
 			cerFile = System.getenv("AIPAY_CER_PUBLIC_KEY");
 			if(StringUtils.isEmpty(cerFile)){
-				cerFile=properties.getProperty("AIPAY_PFX_PRIVATE_KEY");
+				cerFile=properties.getProperty("AIPAY_CER_PUBLIC_KEY");
 			}
 		}catch (IOException e) {
 			log.error("Error loading configuration file", e);
