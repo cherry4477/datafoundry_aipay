@@ -29,7 +29,8 @@ public class ConfigUtil {
 	private static String partnerAcctId;
 	private static String partnerAcctName;
 	private static String queryUrl;
-	
+	private static String pfxFile;
+	private static String cerFile;
 	static{
 		InputStream inStream = ConfigUtil.class.getClassLoader()
 				.getResourceAsStream("application.properties");
@@ -74,6 +75,14 @@ public class ConfigUtil {
 			if(StringUtils.isEmpty(queryUrl)){
 				queryUrl=properties.getProperty("QUERY_URL");
 			}
+			pfxFile = System.getenv("AIPAY_PFX_PRIVATE_KEY");
+			if(StringUtils.isEmpty(pfxFile)){
+				pfxFile=properties.getProperty("AIPAY_PFX_PRIVATE_KEY");
+			}
+			cerFile = System.getenv("AIPAY_CER_PUBLIC_KEY");
+			if(StringUtils.isEmpty(cerFile)){
+				cerFile=properties.getProperty("AIPAY_PFX_PRIVATE_KEY");
+			}
 		}catch (IOException e) {
 			log.error("Error loading configuration file", e);
 		}
@@ -113,18 +122,16 @@ public class ConfigUtil {
 	public static String getConsul(){
 		return consul;
 	}
-	public static ReqMsgGenerate  getPublicReqMsgGenerate(){
-		String pfxFile =  "hongpay/test_public_key.cer ";
-		ReqMsgGenerate reqMsgGenerate = new ReqMsgGenerate(pfxFile,"aipay123456","aipay654321");
-		return reqMsgGenerate;
-	}
+//	public static ReqMsgGenerate  getPublicReqMsgGenerate(){
+//		String pfxFile =  "hongpay/test_public_key.cer";
+//		ReqMsgGenerate reqMsgGenerate = new ReqMsgGenerate(pfxFile,"aipay123456","aipay654321");
+//		return reqMsgGenerate;
+//	}
 	public static ReqMsgGenerate  getPrivateReqMsgGenerate(){
-		String pfxFile = "hongpay/test_private_key.pfx";
 		ReqMsgGenerate reqMsgGenerate = new ReqMsgGenerate(pfxFile,"aipay123456","aipay654321");
 		return reqMsgGenerate;
 	}
 	public static ResMsgAnalyze  getResMsgAnalyze(){
-		String cerFile  ="hongpay/aipay_public.cer";
 		return  new ResMsgAnalyze(cerFile);
 	}
 	
